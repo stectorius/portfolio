@@ -1,0 +1,302 @@
+/* ============================================================
+   GORUN HECTOR DARIUS ȘTEFAN — Portfolio Stylesheet
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #090909;
+  --bg-card:      #111111;
+  --bg-raised:    #181818;
+  --gold:         #c8a96e;
+  --gold-dim:     #8a7249;
+  --gold-glow:    rgba(200, 169, 110, 0.12);
+  --text:         #d4d4d4;
+  --text-muted:   #6b6b6b;
+  --text-heading: #f0f0f0;
+  --border:       rgba(200, 169, 110, 0.15);
+  --border-subtle: rgba(255,255,255,0.05);
+  --rail-w:       3px;
+  --nav-w:        320px;
+  --transition:   0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-heading);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); font-weight: 700; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 600; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 600; }
+h4 { font-size: 0.9rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+
+p { max-width: 65ch; }
+a { color: var(--gold); text-decoration: none; transition: color var(--transition); }
+a:hover { color: #e0c48a; }
+
+/* ── Golden Rail (signature element) ── */
+.rail {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--rail-w);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--gold) 20%,
+    var(--gold) 80%,
+    transparent 100%
+  );
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* ── Hamburger / Menu Toggle ── */
+.menu-toggle {
+  position: fixed;
+  top: 28px;
+  right: 28px;
+  z-index: 200;
+  width: 48px; height: 48px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: border-color var(--transition), background var(--transition);
+}
+.menu-toggle:hover { border-color: var(--gold); background: var(--bg-raised); }
+
+.menu-toggle span {
+  display: block;
+  width: 22px; height: 1.5px;
+  background: var(--text-heading);
+  transition: transform var(--transition), opacity var(--transition);
+  transform-origin: center;
+}
+.menu-open .menu-toggle span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.menu-open .menu-toggle span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.menu-open .menu-toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Side Navigation Drawer ── */
+.nav-drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: var(--nav-w);
+  height: 100%;
+  background: #0d0d0d;
+  border-left: 1px solid var(--border);
+  z-index: 150;
+  transform: translateX(100%);
+  transition: transform var(--transition);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 40px 40px;
+  overflow-y: auto;
+}
+.menu-open .nav-drawer { transform: translateX(0); }
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 140;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+.menu-open .nav-overlay { opacity: 1; pointer-events: all; }
+
+.nav-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.nav-links { list-style: none; flex: 1; }
+.nav-links li { margin-bottom: 8px; }
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text);
+  border: 1px solid transparent;
+  transition: all var(--transition);
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-heading);
+  border-color: var(--border);
+  background: var(--bg-raised);
+}
+.nav-links a.active { color: var(--gold); border-color: var(--border); }
+
+.nav-links a .nav-icon {
+  width: 20px; height: 20px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.nav-links a:hover .nav-icon,
+.nav-links a.active .nav-icon { opacity: 1; }
+
+.nav-number {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle);
+}
+.nav-socials a {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.nav-socials a:hover { color: var(--gold); border-color: var(--border); }
+
+/* Language Switcher */
+.lang-switch {
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+}
+.lang-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.lang-btn:hover { color: var(--text-heading); border-color: var(--border); }
+.lang-btn.active { color: var(--gold); border-color: var(--gold); background: var(--gold-glow); }
+
+/* ── Page Layout ── */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  padding-left: 24px; /* clear rail */
+}
+
+/* ── Section Base ── */
+.section {
+  padding: 120px 80px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Tags / Chips ── */
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-glow);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 32px;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.card:hover { border-color: var(--border); transform: translateY(-3px); }
+
+/* ── Divider ── */
+.gold-divider {
+  width: 48px; height: 2px;
+  background: var(--gold);
+  margin: 16px 0 32px;
+}
+
+/* ── Scroll Fade-In Animation ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .section { padding: 80px 28px 60px; }
+  :root { --nav-w: 100vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ── Translation Utility ── */
+[data-lang] { display: none; }
+[data-lang].lang-active { display: block; }
+span[data-lang].lang-active { display: inline; }

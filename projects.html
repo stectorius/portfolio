@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Darius</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Projects page styles ── */
+
+    .page-hero {
+      padding: 160px 80px 80px 104px;
+      position: relative;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 40%;
+      height: 100%;
+      background: radial-gradient(ellipse at top right, var(--gold-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-btn:hover { border-color: var(--border); color: var(--text); }
+    .filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-glow); }
+
+    /* Featured project */
+    .featured-project {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 32px;
+      transition: border-color var(--transition);
+    }
+    .featured-project:hover { border-color: var(--border); }
+
+    .featured-visual {
+      background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Abstract geometric design for placeholders */
+    .visual-geo {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .geo-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+    .geo-line {
+      position: absolute;
+      background: var(--border);
+    }
+
+    .visual-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(200,169,110,0.15);
+      letter-spacing: -0.04em;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .featured-content {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .featured-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .featured-content h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+    .featured-content p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 12px;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      padding: 8px 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      transition: all var(--transition);
+    }
+    .project-link:hover { color: var(--gold); border-color: var(--border); }
+    .project-link svg { width: 14px; height: 14px; }
+
+    /* Projects grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover { border-color: var(--border); transform: translateY(-4px); }
+
+    .project-thumb {
+      height: 160px;
+      background: linear-gradient(135deg, #141414 0%, #1c1c1c 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-thumb .thumb-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: rgba(200,169,110,0.12);
+      letter-spacing: -0.04em;
+      z-index: 1;
+    }
+    .thumb-accent {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+    }
+
+    .project-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .project-body h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .project-body p { font-size: 0.88rem; color: var(--text-muted); flex: 1; margin-bottom: 16px; max-width: 100%; }
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .project-year { font-size: 0.75rem; color: var(--text-muted); font-family: 'Space Grotesk', sans-serif; }
+
+    /* Status badge */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .status.live .status-dot { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+    .status.wip .status-dot { background: #fb923c; }
+    .status.completed .status-dot { background: var(--gold); }
+    .status.live { color: #4ade80; }
+    .status.wip { color: #fb923c; }
+    .status.completed { color: var(--gold); }
+
+    @media (max-width: 768px) {
+      .page-hero { padding: 100px 28px 60px 52px; }
+      .featured-project { grid-template-columns: 1fr; }
+      .featured-visual { min-height: 200px; }
+    }
+
+    .nav-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(100%);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rail" aria-hidden="true"></div>
+  <div class="nav-overlay" aria-hidden="true"></div>
+
+  <nav class="nav-drawer" aria-label="Main navigation">
+    <img src="profile_picture.JPG" alt="Darius profile photo" class="nav-avatar" />
+    <p class="nav-label">Navigation</p>
+    <ul class="nav-links">
+      <li>
+        <a href="index.html">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          <span data-lang="en" class="lang-active">Introduction</span>
+          <span data-lang="ro">Introducere</span>
+          <span class="nav-number">01</span>
+        </a>
+      </li>
+      <li>
+        <a href="projects.html" class="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span data-lang="en" class="lang-active">Projects</span>
+          <span data-lang="ro">Proiecte</span>
+          <span class="nav-number">02</span>
+        </a>
+      </li>
+      <li>
+        <a href="4craiova.html">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.9 6.15L22 9.24l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.11 2 9.24l7.1-1.09L12 2z"/></svg>
+          <span data-lang="en" class="lang-active">4Craiova</span>
+          <span data-lang="ro">4Craiova</span>
+          <span class="nav-number">03</span>
+        </a>
+      </li>
+      <li>
+        <a href="history.html">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span data-lang="en" class="lang-active">History & CV</span>
+          <span data-lang="ro">Istoric & CV</span>
+          <span class="nav-number">03</span>
+        </a>
+      </li>
+    </ul>
+    <div class="nav-socials">
+      <a href="https://github.com/stectorius" title="GitHub" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <a href="#" title="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="#" title="Twitter / X">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/stectorius" title="Instagram" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.5A4.5 4.5 0 1016.5 13 4.5 4.5 0 0012 8.5zm6.8-3.6a1.08 1.08 0 11-1.08-1.08A1.08 1.08 0 0118.8 4.9z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@stectorius" title="TikTok" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 3v9.1a4 4 0 11-4-4V3a7 7 0 006 0z"/></svg>
+      </a>
+      <a href="mailto:contact@stectorius.dev" title="Email">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h16v12H4z"/><path d="M22 6l-10 7L2 6" fill="none" stroke="currentColor" stroke-width="0.5"/></svg>
+      </a>
+      <a href="tel:+40763100288" title="Phone">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6.6 10.2a15.05 15.05 0 006.2 6.2l2.2-2.2a1 1 0 011.1-.2c1.2.5 2.6.8 4 .8a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h2.7a1 1 0 011 1c0 1.4.3 2.8.8 4a1 1 0 01-.2 1.1L6.6 10.2z"/></svg>
+      </a>
+    </div>
+    <div class="lang-switch">
+      <button class="lang-btn" data-lang-btn="en">EN</button>
+      <button class="lang-btn" data-lang-btn="ro">RO</button>
+    </div>
+  </nav>
+
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="page-wrapper">
+
+    <!-- Page Header -->
+    <header class="page-hero">
+      <h4 class="reveal">
+        <span data-lang="en" class="lang-active">My Work</span>
+        <span data-lang="ro">Munca Mea</span>
+      </h4>
+      <div class="gold-divider reveal" style="transition-delay:0.1s"></div>
+      <h1 class="reveal" style="transition-delay:0.1s">
+        <span data-lang="en" class="lang-active">Projects</span>
+        <span data-lang="ro">Proiecte</span>
+      </h1>
+      <p class="reveal" style="margin-top:20px; max-width:560px; transition-delay:0.2s">
+        <span data-lang="en" class="lang-active">
+          My main project is 4Craiova — a communication board for teenagers in Craiova to share
+          experiences about upcoming games, local events, and community topics.
+        </span>
+        <span data-lang="ro">
+          Principalul meu proiect este 4Craiova — un panou de comunicare pentru adolescenți din Craiova,
+          pentru a împărtăși experiențe despre jocuri viitoare, evenimente locale și subiecte de comunitate.
+        </span>
+      </p>
+    </header>
+
+    <section class="section" style="padding-top: 0;">
+
+      <!-- Filter bar -->
+      <!-- Featured Project -->
+      <div class="featured-project reveal">
+        <div class="featured-visual">
+          <div class="visual-geo" aria-hidden="true">
+            <div class="geo-circle" style="width:200px;height:200px;top:-40px;left:-40px;opacity:0.4;"></div>
+            <div class="geo-circle" style="width:120px;height:120px;bottom:20px;right:40px;opacity:0.3;"></div>
+            <div class="geo-line" style="width:1px;height:100%;left:50%;opacity:0.2;"></div>
+            <div class="geo-line" style="height:1px;width:100%;top:50%;opacity:0.2;"></div>
+          </div>
+          <span class="visual-label">P01</span>
+        </div>
+        <div class="featured-content">
+          <p class="featured-badge">
+            ★ <span data-lang="en" class="lang-active">Featured Project</span>
+            <span data-lang="ro">Proiect Recomandat</span>
+          </p>
+          <h3>
+            <span data-lang="en" class="lang-active">4Craiova</span>
+            <span data-lang="ro">4Craiova</span>
+          </h3>
+          <p>
+            <span data-lang="en" class="lang-active">
+              A communication board for teenagers in Craiova to share experiences about upcoming games,
+              community events, and local tech conversations.
+            </span>
+            <span data-lang="ro">
+              Un panou de comunicare pentru adolescenți din Craiova pentru a împărtăși experiențe despre jocuri viitoare,
+              evenimente comunitare și discuții despre tehnologie.
+            </span>
+          </p>
+          <div class="tag-row">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">C#</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/stectorius/4craiova" class="project-link" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              <span data-lang="en" class="lang-active">View on GitHub</span>
+              <span data-lang="ro">Vezi pe GitHub</span>
+            </a>
+            <a href="4craiova.html" class="project-link">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 8h8v8H8z"/></svg>
+              <span data-lang="en" class="lang-active">Progress Journal</span>
+              <span data-lang="ro">Jurnal Progres</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="featured-project reveal" style="margin-top: 32px;">
+        <div class="featured-visual">
+          <div class="visual-geo" aria-hidden="true">
+            <div class="geo-circle" style="width:180px;height:180px;top:-30px;left:-30px;opacity:0.35;"></div>
+            <div class="geo-circle" style="width:100px;height:100px;bottom:30px;right:20px;opacity:0.25;"></div>
+          </div>
+          <span class="visual-label">P02</span>
+        </div>
+        <div class="featured-content">
+          <p class="featured-badge">
+            ★ <span data-lang="en" class="lang-active">Featured Project</span>
+            <span data-lang="ro">Proiect Recomandat</span>
+          </p>
+          <h3>
+            <span data-lang="en" class="lang-active">Small Projects on GitHub</span>
+            <span data-lang="ro">Proiecte Mici pe GitHub</span>
+          </h3>
+          <p>
+            <span data-lang="en" class="lang-active">
+              Small experiments, utilities, and early-stage work across multiple languages — now highlighted as a featured part of the portfolio.
+            </span>
+            <span data-lang="ro">
+              Experimente mici, utilitare și proiecte în stadiu incipient în mai multe limbaje — acum evidențiate ca parte recomandată a portofoliului.
+            </span>
+          </p>
+          <div class="tag-row">
+            <span class="tag">C++</span>
+            <span class="tag">Python</span>
+            <span class="tag">Java</span>
+            <span class="tag">C#</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/stectorius" class="project-link" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              <span data-lang="en" class="lang-active">Visit GitHub</span>
+              <span data-lang="ro">Vizitează GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <footer style="padding: 40px 80px; border-top: 1px solid var(--border-subtle);">
+      <p style="font-size: 0.78rem; color: var(--text-muted); max-width: 100%;">
+        <span data-lang="en" class="lang-active">© 2026 Darius. All rights reserved.</span>
+        <span data-lang="ro">© 2026 Darius. Toate drepturile rezervate.</span>
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+    // Filter buttons (visual only — extend with real filtering if needed)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
